@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f4f7fc;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        textarea {
+            resize: none;
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #3498db;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .response-container {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .response-container h2 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .response-container p {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #34495e;
+            min-height: 80px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #7f8c8d;
+        }
+
+        footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            textarea {
+                height: 120px;
+            }
+
+            button {
+                font-size: 0.9rem;
+                padding: 10px 18px;
+            }
+
+            .response-container p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ask Ollama</h1>
+        <form id="askForm">
+            <div class="input-container">
+                <label for="prompt">Enter your prompt:</label>
+                <textarea id="prompt" name="prompt" placeholder="Ask me anything..."></textarea>
+                <button type="submit">Ask</button>
+            </div>
+        </form>
+
+        <div class="response-container">
+            <h2>Response</h2>
+            <p id="response">Waiting for your prompt...</p>
+        </div>
+
+        <footer>
+            <p>Powered by <a href="https://ollama.com" target="_blank">Ollama</a></p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('askForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const prompt = document.getElementById('prompt').value;
+
+            // Show loading text while waiting for response
+            document.getElementById('response').innerText = 'Thinking...';
+
+            const response = await fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: prompt, model: 'llama3.2:1b' })
+            });
+
+            const data = await response.json();
+
+            // Display the response text
+            document.getElementById('response').innerText = data.response || 'No response from model.';
+        });
+    </script>
+</body>
+</html>
