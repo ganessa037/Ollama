@@ -70,7 +70,13 @@ ollama-web-interface/
 
 ## Screenshots
 
-[Add screenshots of your application here]
+### Main Interface
+![Main Interface](images/s1.png)
+
+
+### Response Example
+![Response Example](images/s2.png)
+
 
 ## Contributing
 
